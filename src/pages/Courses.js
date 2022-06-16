@@ -30,7 +30,7 @@ const Courses = () => {
     };
 
     return (
-        <Box sx={{ width: '100%' }}>
+        <Box sx={{ width: '100%', height: '100vh' }}>
             <Grid container spacing={3}>
                 <Grid item xs={12} md={8}>
                     <h1>Courses</h1>

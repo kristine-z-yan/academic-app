@@ -48,7 +48,6 @@ export const coursesSlice = createSlice({
     },
 })
 
-// Action creators are generated for each case reducer function
 export const coursesActions = coursesSlice.actions
 
 export default coursesSlice;
