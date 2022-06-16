@@ -24,7 +24,8 @@ const Layout = (props) => {
             <CssBaseline />
             <AppBar
                 position="fixed"
-                sx={{ width: `calc(100% - ${drawerWidth}px)`, ml: `${drawerWidth}px` }}
+                sx={{ width: `calc(100% - ${drawerWidth}px)`, ml: `${drawerWidth}px`, bgcolor: '#a697bd' }}
+
             >
                 <Toolbar>
                     <Typography variant="h6" noWrap component="div">
@@ -35,7 +36,7 @@ const Layout = (props) => {
             <Sidebar />
             <Box
                 component="main"
-                sx={{ flexGrow: 1, bgcolor: 'background.default', p: 3 }}
+                sx={{ flexGrow: 1, bgcolor: '#fbfbfb', p: 3 }}
             >
                 <Toolbar />
                 <Routes>

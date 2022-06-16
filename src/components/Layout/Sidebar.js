@@ -3,31 +3,41 @@ import {
     Link
 } from "react-router-dom";
 
+import Courses from "../../pages/Courses";
+
 import Toolbar from '@mui/material/Toolbar';
 import Drawer from '@mui/material/Drawer';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
-import Courses from "../../pages/Courses";
+import DashboardIcon from '@mui/icons-material/Dashboard';
+import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
+import {ListItemIcon} from "@mui/material";
 
+import classes from './Sidebar.module.css';
 
 const drawerWidth = 240;
 
 const links = [
     {
         text: 'Courses',
-        path: ''
+        path: '',
+        icon: <DashboardIcon />
     },
     {
         text: 'To Do',
-        path: 'to-do'
+        path: 'to-do',
+        icon: <FormatListBulletedIcon />
     }
 ];
 
 const Sidebar = () => {
     const listItems = links.map((link) => {
         return (
-            <ListItem key={link.text} disablePadding>
-                <Link to={'/' + link.path}>{link.text}</Link>
+            <ListItem key={link.text} className={classes['nav-item']}>
+                <ListItemIcon>
+                    {link.icon}
+                </ListItemIcon>
+                <Link to={'/' + link.path} >{link.text}</Link>
             </ListItem>
         )
     })
@@ -45,8 +55,8 @@ const Sidebar = () => {
             variant="permanent"
             anchor="left"
         >
-            <Toolbar />
-            <List>
+            <Toolbar sx={{ bgcolor: '#e9decf'}}/>
+            <List sx={{ bgcolor: '#e9decf', height: '100vh'}}>
                 { listItems }
             </List>
         </Drawer>

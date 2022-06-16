@@ -1,0 +1,14 @@
+.favorite {
+    -webkit-box-shadow: 2px 1px 18px -3px #9C2891 !important;
+    box-shadow: 2px 1px 18px -3px #9C2891 !important;
+}
+
+.new {
+    -webkit-box-shadow: 2px 1px 19px -3px #4EB538 !important;
+    box-shadow: 2px 1px 19px -3px #4EB538 !important;
+}
+
+.popular {
+    -webkit-box-shadow: 2px 1px 19px -3px #CC1031 !important;
+    box-shadow: 2px 1px 19px -3px #CC1031 !important;
+}
