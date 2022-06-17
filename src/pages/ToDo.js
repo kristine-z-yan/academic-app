@@ -22,9 +22,11 @@ import { tasksActions } from "../store/tasks-slice";
 import Typography from "@mui/material/Typography";
 
 const ToDo = () => {
-    const [taskLabel, setTaskLabel] = useState("");
     const [filter, setFilter] = useState('all');
-    // const [taskHasError, setTaskHasError] = useState(false);
+
+    const [isTouched, setIsTouched] = useState(false);
+    const [taskLabel, setTaskLabel] = useState("");
+
     const dispatch = useDispatch();
 
     let todos = useSelector(state => state.todos);
@@ -36,11 +38,7 @@ const ToDo = () => {
     if (allTasks.length > 0 ) {
         let filterBy;
         if (filter !== 'all') {
-            if (filter === 'completed') {
-                filterBy = true;
-            } else {
-                filterBy = false;
-            }
+            filterBy = filter === 'completed';
             allTasks = allTasks.filter((task) => task.completed === filterBy)
 
         }
@@ -52,14 +50,19 @@ const ToDo = () => {
         })
     }
 
+    const valueIsValid = taskLabel.trim() !== '';
+    const inputHasError = !valueIsValid && isTouched;
+
     const changeInputHandler = (event) => {
-        if (event.target.value !== '') {
-            setTaskLabel(event.target.value);
-        }
+        setTaskLabel(event.target.value);
     }
 
+    const inputBlurHandler = () => {
+        setIsTouched(true);
+    };
+
     const submitTaskHandler = () => {
-        if (taskLabel !== '') {
+        if (valueIsValid) {
             const task = {
                 text: taskLabel,
                 completed: false,
@@ -67,10 +70,8 @@ const ToDo = () => {
             }
             dispatch(tasksActions.add(task));
             setTaskLabel('');
+            setIsTouched(false);
         }
-        // else {
-        //     setTaskHasError(true)
-        // }
     }
 
     const handleKeypress = e => {
@@ -89,9 +90,7 @@ const ToDo = () => {
     }
 
     const filterTasksHandler = (el) => {
-        // dispatch(tasksActions.filter(el.target.value));
         setFilter(el.target.value);
-
     }
 
     return (
@@ -132,9 +131,15 @@ const ToDo = () => {
                            <Divider />
                            <Grid sx={{ width: '100%', marginY: 2 }} justify-content='center'>
                                <InputLabel htmlFor="todo-input">My new task is </InputLabel>
-                               <Input id="todo-input" sx={{ width: '75%', marginRight: 2 }} value={taskLabel} onChange={changeInputHandler}  onKeyPress={handleKeypress}/>
+                               <Input
+                                   id="todo-input"
+                                   sx={{ width: '75%', marginRight: 2 }}
+                                   value={taskLabel}
+                                   onChange={changeInputHandler}
+                                   onBlur={inputBlurHandler}
+                                   onKeyPress={handleKeypress}/>
                                <Button variant="contained" sx={{ width: '20%' }} onClick={submitTaskHandler}>Add</Button>
-                               {/*{ taskHasError && <FormHelperText id="todo-helper-text" sx={{color: 'red'}}>Please, fill this field.</FormHelperText> }*/}
+                               { inputHasError && <FormHelperText id="todo-helper-text" sx={{color: 'red'}}>Please, fill this field.</FormHelperText> }
                            </Grid>
                            <Grid sx={{ width: '95%' }}>
                               <List>
