@@ -1,6 +1,9 @@
 import * as React from 'react';
-import {IconButton, ListItem} from "@mui/material";
+import { useDispatch } from "react-redux";
 
+import { tasksActions } from '../../store/tasks-slice';
+
+import {IconButton, ListItem} from "@mui/material";
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
@@ -8,38 +11,32 @@ import Checkbox from '@mui/material/Checkbox';
 import DeleteIcon from '@mui/icons-material/Delete';
 
 const ToDoListItem = (props) => {
-    const [checked, setChecked] = React.useState([0]);
+    const dispatch = useDispatch();
 
-    const handleToggle = (value) => () => {
-        const currentIndex = checked.indexOf(value);
-        const newChecked = [...checked];
-
-        if (currentIndex === -1) {
-            newChecked.push(value);
-        } else {
-            newChecked.splice(currentIndex, 1);
-        }
-
-        setChecked(newChecked);
+    const completeTaskHandler = (id) => {
+        dispatch(tasksActions.complete(id));
     };
 
+    const deleteTaskHandler = (id) => {
+        dispatch(tasksActions.delete(id));
+    }
+
     return (
-        <ListItem>
-            <ListItemButton role={undefined} onClick={handleToggle()} dense>
+        <ListItem id={'task-' + props.id}>
+            <ListItemButton role={undefined} onClick={() => completeTaskHandler(props.id)} dense>
                 <ListItemIcon>
                     <Checkbox
                         edge="start"
-                        checked={checked.indexOf() !== -1}
+                        checked={props.completed}
                         tabIndex={-1}
                         disableRipple
-                        // inputProps={{ 'aria-labelledby':  }}
                     />
                 </ListItemIcon>
                 <ListItemText  primary={props.text} />
-                <IconButton edge="end" aria-label="comments">
-                    <DeleteIcon />
-                </IconButton>
             </ListItemButton>
+            <IconButton edge="end" aria-label="delete" onClick={() => deleteTaskHandler(props.id)}>
+                <DeleteIcon/>
+            </IconButton>
         </ListItem>
     )
 }
