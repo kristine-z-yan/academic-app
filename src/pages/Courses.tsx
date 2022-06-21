@@ -8,23 +8,22 @@ import {Grid} from "@mui/material";
 
 import ImgCard from "../components/ImgCard/ImgCard";
 import { coursesActions } from '../store/courses-slice';
+import {RootState} from "../store";
 
-const Courses = () => {
+
+const Courses: React.FC = () => {
     const [value, setValue] = React.useState('all');
-
-    let courses = useSelector(state => state.courses);
-
+    let courses = useSelector((state:RootState) => state.courses);
     const dispatch = useDispatch();
+    const items = courses.filtered.length > 0 ? courses.filtered : courses.all;
 
-    courses = courses.filtered.length > 0 ? courses.filtered : courses.all;
-
-    const coursesList = courses.map((course,index) => {
+    const coursesList = items.map((course,index) => {
         return (
-            <ImgCard img={course.imgPath} type={course.type} key={index} />
+            <ImgCard imgPath={course.imgPath} type={course.type} key={index} />
         )
     })
 
-    const handleChange = (event, newValue) => {
+    const handleChange = (event: React.SyntheticEvent, newValue: string) => {
         setValue(newValue);
         dispatch(coursesActions.filterByType(newValue));
     };

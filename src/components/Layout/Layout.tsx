@@ -17,7 +17,7 @@ import ToDo from "../../pages/ToDo";
 
 const drawerWidth = 240;
 
-const Layout = (props) => {
+const Layout = () => {
     return (
         <Box sx={{ display: 'flex' }}>
             <Router>

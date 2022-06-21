@@ -9,15 +9,16 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Checkbox from '@mui/material/Checkbox';
 import DeleteIcon from '@mui/icons-material/Delete';
+import Task from "../../models/task";
 
-const ToDoListItem = (props) => {
+const ToDoListItem: React.FC<Task> = (props) => {
     const dispatch = useDispatch();
 
-    const completeTaskHandler = (id) => {
+    const completeTaskHandler = (id: number) => {
         dispatch(tasksActions.complete(id));
     };
 
-    const deleteTaskHandler = (id) => {
+    const deleteTaskHandler = (id: number) => {
         dispatch(tasksActions.delete(id));
     }
 

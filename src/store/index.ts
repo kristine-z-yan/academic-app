@@ -2,7 +2,7 @@ import {configureStore} from '@reduxjs/toolkit';
 import { coursesSlice } from "./courses-slice";
 import { tasksSlice } from "./tasks-slice";
 
-function saveToLocalStorage(state) {
+function saveToLocalStorage(state: RootState) {
     try {
         const serialisedState = JSON.stringify(state);
         localStorage.setItem("state", serialisedState);
@@ -30,6 +30,7 @@ const store = configureStore({
     preloadedState: loadFromLocalStorage()
 });
 
+export type RootState = ReturnType<typeof store.getState>
 
 store.subscribe(() => saveToLocalStorage(store.getState()));
 

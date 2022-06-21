@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {useState} from "react";
+import { useState } from "react";
 
 import Box from "@mui/material/Box";
 import {
@@ -10,7 +10,6 @@ import {
     Grid,
     Input,
     InputLabel,
-    ListItem,
     NativeSelect
 } from "@mui/material";
 import Card from "@mui/material/Card";
@@ -20,26 +19,26 @@ import ToDoListItem from "../components/ToDoListItem/ToDoListItem";
 import {useDispatch, useSelector} from "react-redux";
 import { tasksActions } from "../store/tasks-slice";
 import Typography from "@mui/material/Typography";
+import {RootState} from "../store";
+import Task from "../models/task";
 
 const ToDo = () => {
     const [filter, setFilter] = useState('all');
-
     const [isTouched, setIsTouched] = useState(false);
     const [taskLabel, setTaskLabel] = useState("");
+    let todos = useSelector((state:RootState) => state.todos);
+    let taskListItems: any[] = [];
 
     const dispatch = useDispatch();
 
-    let todos = useSelector(state => state.todos);
-    let taskListItems = 'You don\'t have any tasks';
-
-    let allTasks = todos.all;
+    let allTasks: Task[] = todos.all;
     let completedAmount = 0;
 
     if (allTasks.length > 0 ) {
-        let filterBy;
+        let filterBy: boolean;
         if (filter !== 'all') {
             filterBy = filter === 'completed';
-            allTasks = allTasks.filter((task) => task.completed === filterBy)
+            allTasks = allTasks.filter((task: Task) => task.completed === filterBy)
 
         }
         taskListItems = allTasks.map( (task) => {
@@ -53,8 +52,8 @@ const ToDo = () => {
     const valueIsValid = taskLabel.trim() !== '';
     const inputHasError = !valueIsValid && isTouched;
 
-    const changeInputHandler = (event) => {
-        setTaskLabel(event.target.value);
+    const changeInputHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setTaskLabel(event.currentTarget.value);
     }
 
     const inputBlurHandler = () => {
@@ -63,20 +62,15 @@ const ToDo = () => {
 
     const submitTaskHandler = () => {
         if (valueIsValid) {
-            const task = {
-                text: taskLabel,
-                completed: false,
-                id: Math.floor(Math.random()*100),
-            }
-            dispatch(tasksActions.add(task));
+            dispatch(tasksActions.add(taskLabel));
             setTaskLabel('');
             setIsTouched(false);
         }
     }
 
-    const handleKeypress = e => {
+    const handleKeypress = (e: React.KeyboardEvent<HTMLDivElement>) => {
         //it triggers by pressing the enter key
-        if (e.charCode === 13) {
+        if (e.key === "Enter") {
             submitTaskHandler();
         }
     };
@@ -89,8 +83,8 @@ const ToDo = () => {
         dispatch(tasksActions.completeAll())
     }
 
-    const filterTasksHandler = (el) => {
-        setFilter(el.target.value);
+    const filterTasksHandler = (el: React.ChangeEvent<HTMLSelectElement>) => {
+        setFilter(el.currentTarget.value);
     }
 
     return (
@@ -143,7 +137,7 @@ const ToDo = () => {
                            </Grid>
                            <Grid sx={{ width: '95%' }}>
                               <List>
-                                  { taskListItems }
+                                  { taskListItems ?? 'You don\'t have any tasks' }
                               </List>
                            </Grid>
                        </CardContent>

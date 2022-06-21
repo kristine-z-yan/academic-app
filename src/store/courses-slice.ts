@@ -1,6 +1,12 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import Course from "../models/course";
 
-const initialState = {
+interface CoursesSlice {
+    all: Course[],
+    filtered: Course[]
+}
+
+const initialState: CoursesSlice  = {
     all: [
         {
             type: 'popular',
@@ -8,7 +14,7 @@ const initialState = {
         },
         {
             type: 'new',
-                imgPath: '/images/img-2.jpg'
+            imgPath: '/images/img-2.jpg'
         },
         {
             type: 'favorite',
@@ -38,11 +44,11 @@ export const coursesSlice = createSlice({
     name: 'courses',
     initialState,
     reducers: {
-        filterByType: (state , action) => {
-            if (action.payload === "all") {
-                state.filtered = state.all;
+        filterByType: (state: CoursesSlice , { payload }: PayloadAction<string>) => {
+                if (payload === "all") {
+                    state.filtered = state.all;
             } else {
-                state.filtered = state.all.filter(obj =>  obj.type === action.payload)
+                state.filtered = state.all.filter(obj => obj.type === payload)
             }
         },
     },
