@@ -14,6 +14,7 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Courses from "../../pages/Courses";
 import ToDo from "../../pages/ToDo";
+import Test from "../../pages/Test";
 
 const drawerWidth = 240;
 
@@ -42,6 +43,7 @@ const Layout = () => {
                 <Routes>
                     <Route path="/" element={<Courses />} />
                     <Route path="/to-do" element={<ToDo />} />
+                    <Route path="/test" element={<Test />} />
                 </Routes>
             </Box>
             </Router>
