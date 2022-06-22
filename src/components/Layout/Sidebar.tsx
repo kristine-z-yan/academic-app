@@ -13,7 +13,7 @@ import DashboardIcon from '@mui/icons-material/Dashboard';
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import {ListItemIcon} from "@mui/material";
 
-// import classes from './Sidebar.module.css';
+import classes from './Sidebar.module.css';
 
 const drawerWidth = 240;
 
@@ -33,8 +33,8 @@ const links = [
 const Sidebar = () => {
     const listItems = links.map((link) => {
         return (
-            // <ListItem key={link.text} className={classes['nav-item']}>
-            <ListItem key={link.text}>
+            <ListItem key={link.text} className={classes['nav-item']}>
+            {/*<ListItem key={link.text}>*/}
                 <ListItemIcon>
                     {link.icon}
                 </ListItemIcon>

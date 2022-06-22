@@ -9,7 +9,6 @@ import {Grid} from "@mui/material";
 
 import Course from "../../models/course";
 
-// @ts-ignore
 import classes from "./ImgCard.module.css"
 
 const ImgCard: React.FC<Course> = (props) => {
