@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useState } from "react";
 
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
@@ -10,33 +11,24 @@ import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
 import { Grid, TextField} from "@mui/material";
 
 import questions from "../questions";
+import Answer from '../../models/answer'
 
-interface Answer {
-    id: number,
-    answer: string,
-    isCorrect: boolean
-}
-
-const TestWrapper: React.FC = () => {
-    const [activeStep, setActiveStep] = React.useState(0);
-    const [showError, setShowError] = React.useState(false);
-    const [emptyAnswers, setEmptyAnswers] = React.useState<Answer[]>([]);
-    const [answerText, setAnswerText] = React.useState("");
-    const [answers, setAnswers] = React.useState<Answer[]>([]);
+const TestWrapper: React.FC<{onFinish: (answers: Answer[]) => void }>= (props) => {
+    const [activeStep, setActiveStep] = useState(0);
+    const [showError, setShowError] = useState(false);
+    const [emptyAnswers, setEmptyAnswers] = useState<Answer[]>([]);
+    const [answerText, setAnswerText] = useState("");
+    const [answers, setAnswers] = useState<Answer[]>([]);
     const maxSteps = questions.length;
     const completed = activeStep === maxSteps;
 
     React.useEffect(() => {
-        if (answers[activeStep]) setAnswerText(answers[activeStep].answer);
-        // emptyAnswers.forEach( (item) => {
-        //     console.log(item.id );
-        //     // if (item.id === answers[activeStep].id) {
-        //     //     setShowError(true);
-        //     // } else {
-        //     //     setShowError(false);
-        //     // }
-        // })
-    }, [activeStep, answers, emptyAnswers]);
+        if (answers[activeStep]) {
+            // setAnswerText(answers[activeStep].answer);
+            answers[activeStep].answer = answerText;
+        }
+        if (emptyAnswers.length === 0) setShowError(false)
+    }, [activeStep, answerText, emptyAnswers]);
 
     answers.length = questions.length;
 
@@ -52,6 +44,7 @@ const TestWrapper: React.FC = () => {
 
     const handleBack = () => {
         setActiveStep((prevActiveStep) => prevActiveStep - 1);
+        setAnswerText(answers[activeStep].answer)
     };
 
     const handleReset = () => {
@@ -63,20 +56,18 @@ const TestWrapper: React.FC = () => {
 
     const changeInputHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
         setAnswerText(event.target.value);
-        setShowError(false)
+        // setShowError(false)
     }
 
     const finishTestHandler = () => {
-    // todo validate answers
-        let empty = answers.filter( (item, index) => item.answer.trim() === "");
-        // console.log(emptyAnswers);
-        if (empty.length === 0) {
-            // show results
-
+        let emptyAnswers = answers.filter( (item, index) => item.answer.trim() === "");
+        if (emptyAnswers.length === 0) {
+            props.onFinish(answers);
         } else {
-            // back to first empty answer
-            // setEmptyAnswers(empty);
-            // setShowError(true);
+            let index = questions.findIndex( (item) => item.id === emptyAnswers[0].id);
+            setActiveStep(index)
+            setEmptyAnswers(emptyAnswers);
+            setShowError(true);
         }
     }
 
@@ -93,7 +84,7 @@ const TestWrapper: React.FC = () => {
                     bgcolor: 'background.default',
                 }}
             >
-                <Typography>Please fill the fields for final result.</Typography>
+                <Typography color={ showError ? 'red': 'black'}>Please fill the fields for final result.</Typography>
             </Paper>
             <Box sx={{ height: 400, maxWidth: 800, width: '100%', p: 4 }}>
                 {completed && (
@@ -111,7 +102,7 @@ const TestWrapper: React.FC = () => {
                             onChange={changeInputHandler}
                             value={answerText}
                         />
-                        {showError && <Typography color="red" variant="subtitle2">This field must not be empty</Typography>}
+                        {/*{showError && <Typography color="red" variant="subtitle2">This field must not be empty</Typography>}*/}
                     </>
                 )}
             </Box>

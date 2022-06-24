@@ -1,14 +1,18 @@
 import * as React from 'react';
 
-import {Button, Chip, Divider, Grid, ListItem} from "@mui/material";
+import {Button, Chip, Grid, ListItem} from "@mui/material";
 import Paper from "@mui/material/Paper";
 import List from "@mui/material/List";
 import ListItemText from "@mui/material/ListItemText";
 import Typography from "@mui/material/Typography";
 
+import Answer from '../../models/answer';
 import questions from "../questions";
 
-const TestResult: React.FC = () => {
+const TestResult: React.FC<{ answers: Answer[], onReset: (reset: boolean) => void }> = (props) => {
+    const onResetHandler = () => {
+        props.onReset(true);
+    }
     const listItems = questions.map( (item, index) => {
         return (
             <ListItem key={index}>
@@ -16,7 +20,7 @@ const TestResult: React.FC = () => {
                     primary={
                         <React.Fragment>
                             { item.label }
-                            <Chip label="Right" color="success" variant="filled" sx={{ marginLeft: '15px'}} />
+                            <Chip label={props.answers[index].isCorrect ? "Right": "Wrong"} color={props.answers[index].isCorrect ? "success": "error"} variant="filled" sx={{ marginLeft: '15px'}} />
                         </React.Fragment>
                     }
                     secondary={
@@ -37,7 +41,7 @@ const TestResult: React.FC = () => {
                                     variant="body1"
                                     color="text.primary"
                                 >
-                                    {item.rightAnswer}
+                                    {props.answers[index].answer}
                                 </Typography>
                             </Grid>
                             <Grid>
@@ -64,7 +68,7 @@ const TestResult: React.FC = () => {
               <List >
                   {listItems}
               </List>
-               <Button sx={{ margin: '15px'}} variant="contained">Try Again</Button>
+               <Button sx={{ margin: '15px'}} variant="contained" onClick={onResetHandler}>Try Again</Button>
            </Paper>
         </Grid>
     )
