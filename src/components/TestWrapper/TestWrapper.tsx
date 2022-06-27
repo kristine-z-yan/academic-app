@@ -16,19 +16,10 @@ import Answer from '../../models/answer'
 const TestWrapper: React.FC<{onFinish: (answers: Answer[]) => void }>= (props) => {
     const [activeStep, setActiveStep] = useState(0);
     const [showError, setShowError] = useState(false);
-    const [emptyAnswers, setEmptyAnswers] = useState<Answer[]>([]);
     const [answerText, setAnswerText] = useState("");
     const [answers, setAnswers] = useState<Answer[]>([]);
     const maxSteps = questions.length;
     const completed = activeStep === maxSteps;
-
-    React.useEffect(() => {
-        if (answers[activeStep]) {
-            // setAnswerText(answers[activeStep].answer);
-            answers[activeStep].answer = answerText;
-        }
-        if (emptyAnswers.length === 0) setShowError(false)
-    }, [activeStep, answerText, emptyAnswers]);
 
     answers.length = questions.length;
 
@@ -39,12 +30,19 @@ const TestWrapper: React.FC<{onFinish: (answers: Answer[]) => void }>= (props) =
             answer: answerText,
             isCorrect: answerText === questions[activeStep].rightAnswer
         };
-        setAnswerText("")
+        (answers[activeStep+1]  && answers[activeStep+1].answer !== "") ?
+            setAnswerText(answers[activeStep+1].answer):
+            setAnswerText("")
     };
 
     const handleBack = () => {
+        answers[activeStep] = {
+            id: questions[activeStep].id,
+            answer: answerText,
+            isCorrect: answerText === questions[activeStep].rightAnswer
+        };
         setActiveStep((prevActiveStep) => prevActiveStep - 1);
-        setAnswerText(answers[activeStep].answer)
+        setAnswerText(answers[activeStep-1].answer)
     };
 
     const handleReset = () => {
@@ -56,7 +54,6 @@ const TestWrapper: React.FC<{onFinish: (answers: Answer[]) => void }>= (props) =
 
     const changeInputHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
         setAnswerText(event.target.value);
-        // setShowError(false)
     }
 
     const finishTestHandler = () => {
@@ -66,7 +63,6 @@ const TestWrapper: React.FC<{onFinish: (answers: Answer[]) => void }>= (props) =
         } else {
             let index = questions.findIndex( (item) => item.id === emptyAnswers[0].id);
             setActiveStep(index)
-            setEmptyAnswers(emptyAnswers);
             setShowError(true);
         }
     }
@@ -102,7 +98,6 @@ const TestWrapper: React.FC<{onFinish: (answers: Answer[]) => void }>= (props) =
                             onChange={changeInputHandler}
                             value={answerText}
                         />
-                        {/*{showError && <Typography color="red" variant="subtitle2">This field must not be empty</Typography>}*/}
                     </>
                 )}
             </Box>
