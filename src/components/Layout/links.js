@@ -3,6 +3,7 @@ import * as React from "react";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
+import GroupIcon from '@mui/icons-material/Group';
 
 const links = [
     {
@@ -19,6 +20,11 @@ const links = [
         text: 'Test',
         path: 'test',
         icon: <EmojiEventsIcon />
+    },
+    {
+        text: 'Users',
+        path: 'users',
+        icon: <GroupIcon />
     }
 ];
 
