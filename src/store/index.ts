@@ -1,6 +1,7 @@
 import {configureStore} from '@reduxjs/toolkit';
 import { coursesSlice } from "./courses-slice";
 import { tasksSlice } from "./tasks-slice";
+import { UsersSlice } from "./users-slice";
 
 function saveToLocalStorage(state: RootState) {
     try {
@@ -25,7 +26,8 @@ function loadFromLocalStorage() {
 const store = configureStore({
      reducer: {
         courses: coursesSlice.reducer,
-        todos: tasksSlice.reducer
+        todos: tasksSlice.reducer,
+        users: UsersSlice.reducer,
     },
     preloadedState: loadFromLocalStorage()
 });
