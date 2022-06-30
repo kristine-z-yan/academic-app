@@ -1,9 +1,9 @@
 import * as React from "react";
-import {SyntheticEvent, useRef} from "react";
-import {useDispatch, useSelector} from "react-redux";
+import { useRef } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 import TextField from "@mui/material/TextField";
-import {Alert, FormControl, Grid, InputLabel, MenuItem, Select} from "@mui/material";
+import { Alert, FormControl, Grid, InputLabel, MenuItem, Select } from "@mui/material";
 import StyledPaper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -22,7 +22,7 @@ const UsersForm: React.FC = () => {
     const genderInputRef = useRef<HTMLSelectElement>();
 
     const dispatch = useDispatch<Dispatch<any>>();
-    let users = useSelector((state:RootState) => state.users);
+    // let users = useSelector((state:RootState) => state.users);
 
     const submitFormHandler = (event: React.FormEvent) => {
         event.preventDefault()
@@ -34,9 +34,8 @@ const UsersForm: React.FC = () => {
         const selectedGender = genderInputRef.current?.value;
 
         const user: UserProps = {
-            id: Math.floor(Math.random() * 100),
-            firstName: enteredFirstname,
-            lastName: enteredLastname,
+            firstname: enteredFirstname,
+            lastname: enteredLastname,
             email: enteredEmail,
             phoneNumber: enteredPhoneNumber,
             gender: selectedGender,
@@ -50,7 +49,7 @@ const UsersForm: React.FC = () => {
     return (
         <Box sx={{ flexGrow: 1}}>
             <StyledPaper>
-                { users.isSucceed && <Alert severity="success">User added successfully!</Alert> }
+                {/*{ users.isSucceed && <Alert severity="success">User added successfully!</Alert> }*/}
 
                 <Grid container wrap="nowrap" spacing={2} sx={{ margin: 1}}>
                     <form onSubmit={submitFormHandler}>

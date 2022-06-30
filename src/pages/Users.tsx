@@ -5,6 +5,7 @@ import {Grid} from "@mui/material";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import UsersForm from "../components/UsersForm/UsersForm";
+import UsersDatatable from "../components/UsersDatatable/UsersDatatable";
 
 
 const Users: React.FC = () => {
@@ -31,7 +32,8 @@ const Users: React.FC = () => {
                 </Tabs>
             </Grid>
             <Box>
-                { tab === 'create' && <UsersForm />}
+                { tab === 'create' && <UsersForm /> }
+                { tab === 'datatable' && <UsersDatatable /> }
             </Box>
         </Box>
     )

@@ -1,8 +1,8 @@
 export type UserProps = {
-    id?: number
-    firstName?: string
-    lastName?: string
+    firstname?: string
+    lastname?: string
     email?: string
     phoneNumber?: string
     gender?: string
+    name?: string
 }

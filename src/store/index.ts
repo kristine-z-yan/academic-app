@@ -2,6 +2,7 @@ import {configureStore} from '@reduxjs/toolkit';
 import { coursesSlice } from "./courses-slice";
 import { tasksSlice } from "./tasks-slice";
 import { UsersSlice } from "./users-slice";
+import logger from 'redux-logger'
 
 function saveToLocalStorage(state: RootState) {
     try {
@@ -29,7 +30,8 @@ const store = configureStore({
         todos: tasksSlice.reducer,
         users: UsersSlice.reducer,
     },
-    preloadedState: loadFromLocalStorage()
+    preloadedState: loadFromLocalStorage(),
+    middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(logger),
 });
 
 export type RootState = ReturnType<typeof store.getState>
