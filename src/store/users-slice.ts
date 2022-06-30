@@ -5,6 +5,7 @@ interface UsersSlice {
     loading: boolean,
     hasErrors: boolean,
     isSucceed: boolean,
+    user: UserProps | {},
     all: UserProps[];
 }
 
@@ -12,6 +13,7 @@ export const initialState: UsersSlice = {
     loading: false,
     hasErrors: false,
     isSucceed: false,
+    user: {},
     all: [],
 }
 
@@ -31,11 +33,14 @@ export const UsersSlice = createSlice({
             state.loading = false
             state.hasErrors = true
         },
-        addUser: (state,  { payload })  => {
+        addUser: (state)  => {
             state.isSucceed = true;
         },
         userDeleted: (state)  => {
             state.loading = false;
+        },
+        getSingleUser: (state, { payload })  => {
+            state.user = payload;
         }
     }
 })
@@ -61,7 +66,7 @@ export function addNewUser (user: UserProps) {
             method: 'POST',
             body: JSON.stringify(user)
         })
-        dispatch(userActions.addUser(user))
+        dispatch(userActions.addUser())
     }
 }
 
@@ -72,6 +77,20 @@ export function deleteUser (key: string) {
         }).then((res) => {
             dispatch(userActions.userDeleted())
             dispatch(fetchUsers())
+        })
+    }
+}
+
+export function getSingleUser (key: string) {
+    return async (dispatch: ActionCreatorWithPayload<any>) => {
+        await fetch('https://academic-cc5a9-default-rtdb.firebaseio.com/users/'+key+'.json', {
+            method: 'GET',
+        })
+            .then((res) => res.json())
+            .then((res) => {
+                if (res) {
+                    dispatch(userActions.getSingleUser(res))
+                }
         })
     }
 }
