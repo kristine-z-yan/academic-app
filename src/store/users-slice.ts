@@ -41,7 +41,12 @@ export const UsersSlice = createSlice({
         },
         getSingleUser: (state, { payload })  => {
             state.user = payload;
-        }
+        },
+        userEdited: (state, { payload })  => {
+            state.all[payload.name] = payload
+            state.loading = false;
+            state.user = {}
+        },
     }
 })
 
@@ -89,8 +94,21 @@ export function getSingleUser (key: string) {
             .then((res) => res.json())
             .then((res) => {
                 if (res) {
-                    dispatch(userActions.getSingleUser(res))
+                    const data = {...res, 'name': key }
+                    dispatch(userActions.getSingleUser(data))
                 }
         })
+    }
+}
+
+export function editUser (user: UserProps) {
+    return async (dispatch: ActionCreatorWithPayload<any>) => {
+        await fetch('https://academic-cc5a9-default-rtdb.firebaseio.com/users/'+user.name+'.json', {
+            method: 'PATCH',
+            body: JSON.stringify(user)
+        }).then((res) => res.json())
+            .then((res) => {
+                dispatch(userActions.userEdited(res))
+            })
     }
 }

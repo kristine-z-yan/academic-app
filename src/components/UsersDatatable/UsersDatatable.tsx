@@ -2,7 +2,7 @@ import * as React from 'react';
 import {SyntheticEvent, useEffect} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {Dispatch} from "@reduxjs/toolkit";
-import {deleteUser, fetchUsers, getSingleUser} from "../../store/users-slice";
+import {deleteUser, editUser, fetchUsers, getSingleUser} from "../../store/users-slice";
 
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
@@ -50,52 +50,31 @@ const style = {
     animation: 'slide-down 300ms ease-out forwards',
 };
 
+const initialUserData = {
+    firstname: '',
+    lastname: '',
+    email: '',
+    phoneNumber: '',
+    gender: 'default',
+    name: '',
+}
+
 const UsersDatatable: React. FC = () => {
     const [page, setPage] = React.useState(0);
-    const [userData, setUserData] = React.useState<UserProps>({
-        firstname: '',
-        lastname: '',
-        email: '',
-        phoneNumber: '',
-        gender: '',
-        name: '',
-    });
+    const [userData, setUserData] = React.useState<UserProps>(initialUserData);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
     const [openModal, setOpenModal] = React.useState(false);
     const dispatch = useDispatch<Dispatch<any>>();
     let data = useSelector((state:RootState) => state.users);
     let users = data.all;
+    const userIdsArray = users ? Object.keys(users) : [];
     let user = data.user;
     useEffect(() => {
         dispatch(fetchUsers());
     }, [dispatch])
-
     useEffect(() => {
         setUserData(user)
     }, [user])
-
-    const handleChangePage = (event: unknown, newPage: number) => {
-        setPage(newPage);
-    };
-    const closeModalHandle = () => setOpenModal(false);
-
-    const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setRowsPerPage(+event.target.value);
-        setPage(0);
-    };
-
-    const openEditUserModal = (key: string) => {
-        dispatch(getSingleUser(key))
-        setOpenModal(true)
-    }
-
-    const deleteUserHandle = (key: string) => {
-        if(window.confirm('Are you sure wanted to delete the user ?')) {
-            dispatch(deleteUser(key))
-        }
-    }
-
-    const userIdsArray = users ? Object.keys(users) : [];
 
     const tableBody = userIdsArray.length > 0 ? userIdsArray.map( (key, id) => {
         return (
@@ -119,13 +98,39 @@ const UsersDatatable: React. FC = () => {
         );
     }) :  <TableRow><TableCell align="center" colSpan={6}>Users not found</TableCell></TableRow>
 
-    const handleInputChange = (event: React.ChangeEvent) => {
-        // console.log(event.target.value, event.target.name);
+    const handleChangePage = (event: unknown, newPage: number) => {
+        setPage(newPage);
+    };
+
+    const closeModalHandle = () => {
+        setOpenModal(false);
+        setUserData(initialUserData)
+    }
+
+    const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setRowsPerPage(+event.target.value);
+        setPage(0);
+    };
+
+    const openEditUserModal = (key: string) => {
+        dispatch(getSingleUser(key))
+        setOpenModal(true)
+    }
+
+    const deleteUserHandle = (key: string) => {
+        if(window.confirm('Are you sure wanted to delete the user ?')) {
+            dispatch(deleteUser(key))
+        }
+    }
+
+    const handleInputChange = (name: string, value: string | number) => {
+        setUserData({...userData, [name]: value })
     }
 
     const submitEditFormHandler = (event: React.FormEvent) => {
         event.preventDefault();
-        console.log(11111)
+        dispatch(editUser(userData))
+        closeModalHandle()
     }
 
     return (
@@ -181,7 +186,7 @@ const UsersDatatable: React. FC = () => {
                                 value={userData.firstname || ""}
                                 label="First Name"
                                 sx={{ padding: 1 }}
-                                onChange={handleInputChange}
+                                onChange={e=>handleInputChange(e.target.name, e.target.value)}
                             />
                             <TextField
                                 required
@@ -191,7 +196,7 @@ const UsersDatatable: React. FC = () => {
                                 value={userData.lastname || ""}
                                 label="Last Name"
                                 sx={{ padding: 1 }}
-                                onChange={handleInputChange}
+                                onChange={e=>handleInputChange(e.target.name, e.target.value)}
                             />
                             <TextField
                                 required
@@ -201,7 +206,7 @@ const UsersDatatable: React. FC = () => {
                                 value={userData.email || ""}
                                 label="Email"
                                 sx={{ padding: 1 }}
-                                onChange={handleInputChange}
+                                onChange={e=>handleInputChange(e.target.name, e.target.value)}
                             />
                             <TextField
                                 required
@@ -211,7 +216,7 @@ const UsersDatatable: React. FC = () => {
                                 value={userData.phoneNumber || ""}
                                 fullWidth
                                 sx={{ padding: 1 }}
-                                onChange={handleInputChange}
+                                onChange={e=>handleInputChange(e.target.name, e.target.value)}
                             />
                             <FormControl fullWidth sx={{ padding: 1 }}>
                                 <InputLabel id="demo-simple-select-label">Gender</InputLabel>
@@ -220,9 +225,8 @@ const UsersDatatable: React. FC = () => {
                                     id="gender"
                                     label="Gender"
                                     name="gender"
-                                    defaultValue="default"
                                     value={userData.gender || "default"}
-                                    // onChange={handleInputChange}
+                                    onChange={e=>handleInputChange(e.target.name, e.target.value)}
                                 >
                                     <MenuItem value="default" disabled>Select</MenuItem>
                                     <MenuItem value="male">Male</MenuItem>

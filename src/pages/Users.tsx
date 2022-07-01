@@ -9,7 +9,8 @@ import UsersDatatable from "../components/UsersDatatable/UsersDatatable";
 
 
 const Users: React.FC = () => {
-    const [tab, setTab] = React.useState('create');
+    // const [tab, setTab] = React.useState('create');
+    const [tab, setTab] = React.useState('datatable');
 
     const handleChange = (event: React.SyntheticEvent, newValue: string) => {
         setTab(newValue);
