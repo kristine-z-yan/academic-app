@@ -1,8 +1,8 @@
 import * as React from 'react';
-import {SyntheticEvent, useEffect} from "react";
+import {useEffect} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {Dispatch} from "@reduxjs/toolkit";
-import {deleteUser, editUser, fetchUsers, getSingleUser} from "../../store/users-slice";
+import {deleteUser, editUser, fetchUsers} from "../../store/users-slice";
 
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
@@ -13,12 +13,24 @@ import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import {RootState} from "../../store";
-import {Button, FormControl, Grid, InputLabel, MenuItem, Modal, Select, SelectChangeEvent} from "@mui/material";
+import {
+    Button,
+    Dialog, DialogActions,
+    DialogContent, DialogContentText,
+    DialogTitle,
+    FormControl,
+    Grid,
+    InputLabel,
+    MenuItem,
+    Modal,
+    Select
+} from "@mui/material";
 import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
 import EditIcon from '@mui/icons-material/Edit';
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import {UserProps} from "../../models/user";
+import Typography from "@mui/material/Typography";
 
 interface Column {
     id: 'firstname' | 'lastname' | 'email' | 'phoneNumber' | 'gender' ;
@@ -62,8 +74,10 @@ const initialUserData = {
 const UsersDatatable: React. FC = () => {
     const [page, setPage] = React.useState(0);
     const [userData, setUserData] = React.useState<UserProps>(initialUserData);
+    const [userKey, setUserKey] = React.useState("");
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
     const [openModal, setOpenModal] = React.useState(false);
+    const [openDeleteModal, setOpenDeleteModal] = React.useState(false);
     const dispatch = useDispatch<Dispatch<any>>();
     let data = useSelector((state:RootState) => state.users);
     let users = data.all;
@@ -71,7 +85,7 @@ const UsersDatatable: React. FC = () => {
     let user = data.user;
     useEffect(() => {
         dispatch(fetchUsers());
-    }, [dispatch])
+    }, [])
     useEffect(() => {
         setUserData(user)
     }, [user])
@@ -92,7 +106,7 @@ const UsersDatatable: React. FC = () => {
                 })}
                 <TableCell>
                   <Button variant="text" color="warning" sx={{ marginRight: '10px' }} onClick={() => openEditUserModal(key)}><EditIcon color="warning"/></Button>
-                  <Button variant="text" color="error" onClick={() => deleteUserHandle(key)}><DeleteForeverOutlinedIcon color="error"/></Button>
+                  <Button variant="text" color="error" onClick={() => showDeleteModal(key)}><DeleteForeverOutlinedIcon color="error"/></Button>
                 </TableCell>
             </TableRow>
         );
@@ -102,9 +116,14 @@ const UsersDatatable: React. FC = () => {
         setPage(newPage);
     };
 
-    const closeModalHandle = () => {
+    const closeEditModalHandle = () => {
         setOpenModal(false);
         setUserData(initialUserData)
+    }
+
+    const closeDeleteModalHandle = () => {
+        setOpenDeleteModal(false);
+        setUserKey('');
     }
 
     const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -113,14 +132,19 @@ const UsersDatatable: React. FC = () => {
     };
 
     const openEditUserModal = (key: string) => {
-        dispatch(getSingleUser(key))
+        // @ts-ignore
+        setUserData(users[key])
         setOpenModal(true)
     }
 
-    const deleteUserHandle = (key: string) => {
-        if(window.confirm('Are you sure wanted to delete the user ?')) {
-            dispatch(deleteUser(key))
-        }
+    const showDeleteModal = (key: string) => {
+        setOpenDeleteModal(true);
+        setUserKey(key);
+    }
+
+    const deleteUserHandle = () => {
+        dispatch(deleteUser(userKey))
+        setOpenDeleteModal(false);
     }
 
     const handleInputChange = (name: string, value: string | number) => {
@@ -130,7 +154,7 @@ const UsersDatatable: React. FC = () => {
     const submitEditFormHandler = (event: React.FormEvent) => {
         event.preventDefault();
         dispatch(editUser(userData))
-        closeModalHandle()
+        closeEditModalHandle()
     }
 
     return (
@@ -171,7 +195,7 @@ const UsersDatatable: React. FC = () => {
             </Paper>
             <Modal
                 open={openModal}
-                onClose={closeModalHandle}
+                onClose={closeEditModalHandle}
                 aria-labelledby="modal-modal-title"
                 aria-describedby="modal-modal-description"
             >
@@ -234,11 +258,31 @@ const UsersDatatable: React. FC = () => {
                                 </Select>
                             </FormControl>
                             <Button sx={{ margin: 1}} type="submit" variant="contained" color="success">Edit</Button>
-                            <Button sx={{ margin: 1}} type="button" variant="contained" color="secondary" onClick={closeModalHandle}>Cancel</Button>
+                            <Button sx={{ margin: 1}} type="button" variant="contained" color="secondary" onClick={closeEditModalHandle}>Cancel</Button>
                         </Grid>
                     </form>
                 </Box>
             </Modal>
+
+            <Dialog
+                open={openDeleteModal}
+                onClose={closeDeleteModalHandle}
+                // PaperComponent={PaperComponent}
+                aria-labelledby="draggable-dialog-title"
+            >
+                <DialogTitle style={{ cursor: 'move' }} id="draggable-dialog-title">
+                    Delete user
+                </DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                       Are you sure wanted to delete the user ?
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={closeDeleteModalHandle} variant="contained" color="secondary">Cancel</Button>
+                    <Button onClick={deleteUserHandle} variant="contained" color="error">Delete</Button>
+                </DialogActions>
+            </Dialog>
         </Box>
     );
 }

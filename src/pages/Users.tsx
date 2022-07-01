@@ -6,11 +6,12 @@ import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import UsersForm from "../components/UsersForm/UsersForm";
 import UsersDatatable from "../components/UsersDatatable/UsersDatatable";
+import 'react-toastify/dist/ReactToastify.min.css';
 
 
 const Users: React.FC = () => {
-    // const [tab, setTab] = React.useState('create');
-    const [tab, setTab] = React.useState('datatable');
+    const [tab, setTab] = React.useState('create');
+    // const [tab, setTab] = React.useState('datatable');
 
     const handleChange = (event: React.SyntheticEvent, newValue: string) => {
         setTab(newValue);

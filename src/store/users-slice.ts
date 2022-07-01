@@ -1,10 +1,10 @@
-import {ActionCreatorWithPayload, AnyAction, createSlice, Dispatch, PayloadAction} from '@reduxjs/toolkit';
+import {ActionCreatorWithPayload, createSlice} from '@reduxjs/toolkit';
 import { UserProps } from "../models/user";
 
 interface UsersSlice {
     loading: boolean,
     hasErrors: boolean,
-    isSucceed: boolean,
+    showToast: boolean,
     user: UserProps | {},
     all: UserProps[];
 }
@@ -12,7 +12,7 @@ interface UsersSlice {
 export const initialState: UsersSlice = {
     loading: false,
     hasErrors: false,
-    isSucceed: false,
+    showToast: false,
     user: {},
     all: [],
 }
@@ -22,7 +22,8 @@ export const UsersSlice = createSlice({
     initialState,
     reducers: {
         getUsers: state => {
-            state.loading = true
+            state.loading = true;
+            state.showToast = false;
         },
         getUsersSuccess: (state, { payload }) => {
             state.all = payload
@@ -33,8 +34,8 @@ export const UsersSlice = createSlice({
             state.loading = false
             state.hasErrors = true
         },
-        addUser: (state)  => {
-            state.isSucceed = true;
+        userAdded: (state)  => {
+            state.showToast = true;
         },
         userDeleted: (state)  => {
             state.loading = false;
@@ -47,6 +48,10 @@ export const UsersSlice = createSlice({
             state.loading = false;
             state.user = {}
         },
+        changeShowToastToFalse: (state) => {
+            state.showToast = false
+        }
+
     }
 })
 
@@ -71,7 +76,7 @@ export function addNewUser (user: UserProps) {
             method: 'POST',
             body: JSON.stringify(user)
         })
-        dispatch(userActions.addUser())
+        dispatch(userActions.userAdded())
     }
 }
 
@@ -82,21 +87,6 @@ export function deleteUser (key: string) {
         }).then((res) => {
             dispatch(userActions.userDeleted())
             dispatch(fetchUsers())
-        })
-    }
-}
-
-export function getSingleUser (key: string) {
-    return async (dispatch: ActionCreatorWithPayload<any>) => {
-        await fetch('https://academic-cc5a9-default-rtdb.firebaseio.com/users/'+key+'.json', {
-            method: 'GET',
-        })
-            .then((res) => res.json())
-            .then((res) => {
-                if (res) {
-                    const data = {...res, 'name': key }
-                    dispatch(userActions.getSingleUser(data))
-                }
         })
     }
 }
