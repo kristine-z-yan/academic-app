@@ -1,9 +1,9 @@
 import * as React from "react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import TextField from "@mui/material/TextField";
-import { Alert, FormControl, Grid, InputLabel, MenuItem, Select } from "@mui/material";
+import { FormControl, Grid, InputLabel, MenuItem, Select } from "@mui/material";
 import StyledPaper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -12,55 +12,34 @@ import { ToastContainer, toast } from 'react-toastify';
 
 import { UserProps } from '../../models/user'
 
-import {addNewUser, userActions} from "../../store/users-slice";
+import {addNewUser} from "../../store/users-slice";
 import { Dispatch } from "@reduxjs/toolkit";
 import { RootState } from "../../store";
 
 const UsersForm: React.FC = () => {
     const [showToast, setShowToast] = useState(false)
-    const firstnameInputRef = useRef<HTMLInputElement>();
-    const lastnameInputRef = useRef<HTMLInputElement>();
-    const emailInputRef = useRef<HTMLInputElement>();
-    const phoneNumberInputRef = useRef<HTMLInputElement>();
-    const genderInputRef = useRef<HTMLSelectElement>();
-
+    const [ formState, setFormState ] = useState<UserProps>({} as UserProps)
     const dispatch = useDispatch<Dispatch<any>>();
     let data = useSelector((state:RootState) => state.users);
 
     useEffect(() => {
-        console.log(data.showToast);
         if(data.showToast) {
           setShowToast(true);
           toast.success("User added successfully!");
         }
-
-        let timer = setTimeout(() => {
-            setShowToast(false);
-            dispatch(userActions.changeShowToastToFalse())
-        }, 5000)
-        return () => clearTimeout(timer)
     }, [data.showToast, dispatch])
 
     const submitFormHandler = (event: React.FormEvent) => {
         event.preventDefault()
-
-        const enteredFirstname = firstnameInputRef.current?.value;
-        const enteredLastname = lastnameInputRef.current?.value;
-        const enteredEmail = emailInputRef.current?.value;
-        const enteredPhoneNumber = phoneNumberInputRef.current?.value;
-        const selectedGender = genderInputRef.current?.value;
-
-        const user: UserProps = {
-            firstname: enteredFirstname,
-            lastname: enteredLastname,
-            email: enteredEmail,
-            phoneNumber: enteredPhoneNumber,
-            gender: selectedGender,
-        }
-
-        dispatch(addNewUser(user));
-
+        dispatch(addNewUser(formState));
         (event.target as HTMLFormElement).reset()
+    }
+
+    const handleChange = (value: string, name: string) => {
+        setFormState({
+            ...formState,
+            [name]: value
+        })
     }
 
     return (
@@ -82,35 +61,39 @@ const UsersForm: React.FC = () => {
                         <Grid item sx={{ m: 1, p: 2}} xs={8}>
                             <TextField
                                 required
+                                name="firstname"
                                 fullWidth
                                 id="firstname"
                                 label="First Name"
                                 sx={{ padding: 1 }}
-                                inputRef={firstnameInputRef}
+                                onChange={(e) => handleChange(e.target.value, e.target.name)}
                             />
                             <TextField
                                 required
                                 fullWidth
+                                name="lastname"
                                 id="lastname"
                                 label="Last Name"
                                 sx={{ padding: 1 }}
-                                inputRef={lastnameInputRef}
+                                onChange={(e) => handleChange(e.target.value, e.target.name)}
                             />
                             <TextField
                                 required
                                 fullWidth
+                                name="email"
                                 id="email"
                                 label="Email"
                                 sx={{ padding: 1 }}
-                                inputRef={emailInputRef}
+                                onChange={(e) => handleChange(e.target.value, e.target.name)}
                             />
                             <TextField
                                 required
+                                name="phoneNumber"
                                 id="phone-number"
                                 label="Phone Number"
                                 fullWidth
                                 sx={{ padding: 1 }}
-                                inputRef={phoneNumberInputRef}
+                                onChange={(e) => handleChange(e.target.value, e.target.name)}
                             />
                             <FormControl fullWidth sx={{ padding: 1 }}>
                                 <InputLabel id="demo-simple-select-label">Gender</InputLabel>
@@ -118,8 +101,9 @@ const UsersForm: React.FC = () => {
                                     labelId="demo-simple-select-label"
                                     id="demo-simple-select"
                                     label="Gender"
+                                    name="gender"
                                     defaultValue="default"
-                                    inputRef={genderInputRef}
+                                    onChange={(e) => handleChange(e.target.value, e.target.name)}
                                 >
                                     <MenuItem value="default" disabled>Select</MenuItem>
                                     <MenuItem value="male">Male</MenuItem>

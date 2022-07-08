@@ -82,10 +82,12 @@ const UsersDatatable: React. FC = () => {
     let data = useSelector((state:RootState) => state.users);
     let users = data.all;
     const userIdsArray = users ? Object.keys(users) : [];
-    let user = data.user;
+    const user: UserProps = data.user;
+
     useEffect(() => {
         dispatch(fetchUsers());
     }, [])
+
     useEffect(() => {
         setUserData(user)
     }, [user])
@@ -94,7 +96,7 @@ const UsersDatatable: React. FC = () => {
         return (
             <TableRow hover role="checkbox" tabIndex={-1} key={id}>
                  {columns.map((column) => {
-                    // @ts-ignore
+                     // @ts-ignore
                      const value = users[key][column.id];
                     return (
                         <TableCell key={column.id} align={column.align}>

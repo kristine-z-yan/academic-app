@@ -23,8 +23,8 @@ const  Test: React.FC = () => {
                 <h1>Test</h1>
             </Grid>
             <Grid container justifyContent="center">
-                { finalAnswers.length === 0 && <TestWrapper onFinish={onFinishHandler}/> }
-                { finalAnswers.length > 0 && <TestResult answers={finalAnswers} onReset={onResetHandler}/> }
+                { !finalAnswers.length && <TestWrapper onFinish={onFinishHandler}/> }
+                { finalAnswers.length && <TestResult answers={finalAnswers} onReset={onResetHandler}/> }
             </Grid>
         </Box>
     );

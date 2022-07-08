@@ -14,6 +14,15 @@ import questions from "../questions";
 import Answer from '../../models/answer'
 
 const TestWrapper: React.FC<{onFinish: (answers: Answer[]) => void }>= (props) => {
+    // TODO:
+    // const [ state, setState ] = useState({
+    //     currentStep: 0,
+    //     steps: {
+    //         first: { value },
+    //         second: { value },
+    //     }
+    // })
+
     const [activeStep, setActiveStep] = useState(0);
     const [showError, setShowError] = useState(false);
     const [answerText, setAnswerText] = useState("");
@@ -25,11 +34,23 @@ const TestWrapper: React.FC<{onFinish: (answers: Answer[]) => void }>= (props) =
 
     const handleNext = () => {
         setActiveStep((prevActiveStep) => prevActiveStep + 1);
+
+        // TODO:
+        // setAnswers({
+        //     ...answers,
+        //     [activeStep]: {
+        //         id: questions[activeStep].id,
+        //         answer: answerText,
+        //         isCorrect: answerText === questions[activeStep].rightAnswer
+        //     }
+        // })
+
         answers[activeStep] = {
             id: questions[activeStep].id,
             answer: answerText,
             isCorrect: answerText === questions[activeStep].rightAnswer
         };
+
         (answers[activeStep+1]  && answers[activeStep+1].answer !== "") ?
             setAnswerText(answers[activeStep+1].answer):
             setAnswerText("")

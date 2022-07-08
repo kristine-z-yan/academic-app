@@ -5,7 +5,7 @@ interface UsersSlice {
     loading: boolean,
     hasErrors: boolean,
     showToast: boolean,
-    user: UserProps | {},
+    user: UserProps,
     all: UserProps[];
 }
 
@@ -13,7 +13,7 @@ export const initialState: UsersSlice = {
     loading: false,
     hasErrors: false,
     showToast: false,
-    user: {},
+    user: {} as UserProps,
     all: [],
 }
 
@@ -46,7 +46,7 @@ export const UsersSlice = createSlice({
         userEdited: (state, { payload })  => {
             state.all[payload.name] = payload
             state.loading = false;
-            state.user = {}
+            state.user = {} as UserProps
         },
         changeShowToastToFalse: (state) => {
             state.showToast = false

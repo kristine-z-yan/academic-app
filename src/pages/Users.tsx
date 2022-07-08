@@ -8,14 +8,15 @@ import UsersForm from "../components/UsersForm/UsersForm";
 import UsersDatatable from "../components/UsersDatatable/UsersDatatable";
 import 'react-toastify/dist/ReactToastify.min.css';
 
+type tab = 'create' | 'datatable';
 
 const Users: React.FC = () => {
-    const [tab, setTab] = React.useState('create');
-    // const [tab, setTab] = React.useState('datatable');
+    const [tab, setTab] = React.useState<tab>('create');
 
-    const handleChange = (event: React.SyntheticEvent, newValue: string) => {
+    const handleChange = (event: React.SyntheticEvent, newValue: tab) => {
         setTab(newValue);
     };
+    
     return (
         <Box sx={{ width: '100%', height: '100vh' }}>
             <Grid item xs={12}>
@@ -34,8 +35,7 @@ const Users: React.FC = () => {
                 </Tabs>
             </Grid>
             <Box>
-                { tab === 'create' && <UsersForm /> }
-                { tab === 'datatable' && <UsersDatatable /> }
+                { tab === 'create' ? <UsersForm /> : <UsersDatatable />}
             </Box>
         </Box>
     )
